@@ -1,0 +1,470 @@
+---
+title: "S4-1:Simulation For Survival Data"
+author: "Sicheng Hao"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+library(ggplot2)
+library(dplyr)
+library(data.table)
+library(survival)
+```
+
+
+## Modeling with both AFT Weibull and Coxph model
+
+Goal: prove model parameters are exchangble 
+
+Let $\gamma$s be parameters in CoxPH  model, and $\theta$s be the corresponding parameters in AFT model, p be the scale of Weibull distribution in the AFT model. Then we have: 
+
+$$\gamma = -\theta * p$$
+### Simulation-1
+
+Use CoxPH model and AFT model to estimate parameter from the same survival data
+
+```{r}
+e.theta1<-NULL
+e.theta2<-NULL
+e.theta3<-NULL
+e.scale<-NULL
+e.gamma1<-NULL
+e.gamma2<-NULL
+e.gamma3<-NULL
+for(i in 1:1000){
+  n = 10000
+  data<-data.frame(x1 = rnorm(n,0,1),
+                 x2 = rbinom(n,1,0.5))
+
+  data$y<-rweibull(n,shape = 1.5,scale = exp(5+1.5*data$x1+2.5*data$x2))
+  data$cen<-rep(1,n)
+  
+  qy<-quantile(data$y,probs = 1)# 100% outcome
+  data$cen<-ifelse(data$y>qy,0,1)
+  data$y.new<-ifelse(data$y>qy,qy,data$y)
+
+
+  fit1<-coxph(data = data,Surv(y.new,cen)~x1 + x2)
+  fit2<-survreg(data = data,Surv(y.new,cen)~x1 + x2,dist = "weibull")
+  
+  e.theta1[i]<-fit2$coefficients[2]
+  e.theta2[i]<-fit2$coefficients[3]
+  #e.theta3[i]<-fit2$coefficients[4]
+  e.scale[i]<-fit2$scale
+  
+  e.gamma1[i]<-fit1$coefficients[1]
+  e.gamma2[i]<-fit1$coefficients[2]
+  #e.gamma3[i]<-fit1$coefficients[3]
+  
+}
+```
+
+### Plot estimated distribution with groud truth
+```{r}
+ggplot()+geom_histogram(aes(e.theta1))+geom_vline(xintercept = 1.5,col = "red")
+ggplot()+geom_histogram(aes(e.theta2))+geom_vline(xintercept = 2.5,col = "red")
+#ggplot()+geom_histogram(aes(e.theta3))+geom_vline(xintercept = 3.5,col = "red")
+ggplot()+geom_histogram(aes(e.scale))+geom_vline(xintercept = 1/1.5,col = "red")
+ggplot()+geom_histogram(aes(e.gamma1))+geom_vline(xintercept = 1.5*(-1.5),col = "red")
+ggplot()+geom_histogram(aes(e.gamma2))+geom_vline(xintercept = 2.5*(-1.5),col = "red")
+#ggplot()+geom_histogram(aes(e.gamma3))+geom_vline(xintercept = 3.5*(-1.5),col = "red")
+```
+
+### Simulation-2 (with interaction term)
+
+```{r}
+
+e.theta1<-NULL
+e.theta2<-NULL
+e.theta3<-NULL
+e.scale<-NULL
+e.gamma1<-NULL
+e.gamma2<-NULL
+e.gamma3<-NULL
+
+for(i in 1:1000){
+  n = 10000
+  data<-data.frame(x1 = rnorm(n,0,1),
+                 x2 = rbinom(n,1,0.5))
+
+  data$y<-rweibull(n,shape = 1.5,scale = exp(5+1.5*data$x1+2.5*data$x2+3.5*data$x1*data$x2))
+  data$cen<-rep(1,n)
+
+  qy<-quantile(data$y,probs = 1)# 100% outcome
+  data$cen<-ifelse(data$y>qy,0,1)
+  data$y.new<-ifelse(data$y>qy,qy,data$y)
+  
+  fit1<-coxph(data = data,Surv(y.new,cen)~x1 + x2 +x1*x2)
+  
+  fit2<-survreg(data = data,Surv(y.new,cen)~x1 + x2 + x1*x2,dist = "weibull")
+
+  e.theta1[i]<-fit2$coefficients[2]
+  e.theta2[i]<-fit2$coefficients[3]
+  e.theta3[i]<-fit2$coefficients[4]
+  e.scale[i]<-fit2$scale
+  
+  e.gamma1[i]<-fit1$coefficients[1]
+  e.gamma2[i]<-fit1$coefficients[2]
+  e.gamma3[i]<-fit1$coefficients[3]
+}
+e.theta1<-e.theta1[which(e.theta1<2&e.theta1>1)]
+e.theta2<-e.theta2[which(e.theta2<3&e.theta2>2)]
+e.theta3<-e.theta3[which(e.theta3<4&e.theta3>3)]
+e.scale<-e.scale[which(e.scale<1&e.scale>0.33)]
+
+```
+
+
+### Plot estimated distribution with groud truth
+```{r}
+ggplot()+geom_histogram(aes(e.theta1))+geom_vline(xintercept = 1.5,col = "red")
+ggplot()+geom_histogram(aes(e.theta2))+geom_vline(xintercept = 2.5,col = "red")
+ggplot()+geom_histogram(aes(e.theta3))+geom_vline(xintercept = 3.5,col = "red")
+ggplot()+geom_histogram(aes(e.scale))+geom_vline(xintercept = 1/1.5,col = "red")
+ggplot()+geom_histogram(aes(e.gamma1))+geom_vline(xintercept = 1.5*(-1.5),col = "red")
+ggplot()+geom_histogram(aes(e.gamma2))+geom_vline(xintercept = 2.5*(-1.5),col = "red")
+ggplot()+geom_histogram(aes(e.gamma3))+geom_vline(xintercept = 3.5*(-1.5),col = "red")
+```
+
+CoxPH model can't handle interaction terms
+
+
+
+## Add censoring
+
+
+### Simulation-3: 
+
+```{r}
+e.theta1<-NULL
+e.theta2<-NULL
+e.theta3<-NULL
+e.scale<-NULL
+e.gamma1<-NULL
+e.gamma2<-NULL
+e.gamma3<-NULL
+for(i in 1:1000){
+  n = 10000
+  data<-data.frame(x1 = rnorm(n,0,1),
+                 x2 = rbinom(n,1,0.5))
+
+  data$y<-rweibull(n,shape = 1.5,scale = exp(5+1.5*data$x1+2.5*data$x2))
+  #data$cen<-rep(1,n)
+  
+  qy<-quantile(data$y,probs = 0.9)# 90% outcome
+  data$cen<-ifelse(data$y>qy,0,1)
+  data$y.new<-ifelse(data$y>qy,qy,data$y)
+
+
+  fit1<-coxph(data = data,Surv(y.new,cen)~x1 + x2)
+  fit2<-survreg(data = data,Surv(y.new,cen)~x1 + x2,dist = "weibull")
+  
+  e.theta1[i]<-fit2$coefficients[2]
+  e.theta2[i]<-fit2$coefficients[3]
+  #e.theta3[i]<-fit2$coefficients[4]
+  e.scale[i]<-fit2$scale
+  
+  e.gamma1[i]<-fit1$coefficients[1]
+  e.gamma2[i]<-fit1$coefficients[2]
+  #e.gamma3[i]<-fit1$coefficients[3]
+  
+}
+
+```
+
+### Plot estimated distribution with groud truth
+```{r}
+ggplot()+geom_histogram(aes(e.theta1))+geom_vline(xintercept = 1.5,col = "red")
+ggplot()+geom_histogram(aes(e.theta2))+geom_vline(xintercept = 2.5,col = "red")
+#ggplot()+geom_histogram(aes(e.theta3))+geom_vline(xintercept = 3.5,col = "red")
+ggplot()+geom_histogram(aes(e.scale))+geom_vline(xintercept = 1/1.5,col = "red")
+ggplot()+geom_histogram(aes(e.gamma1))+geom_vline(xintercept = 1.5*(-1.5),col = "red")
+ggplot()+geom_histogram(aes(e.gamma2))+geom_vline(xintercept = 2.5*(-1.5),col = "red")
+#ggplot()+geom_histogram(aes(e.gamma3))+geom_vline(xintercept = 3.5*(-1.5),col = "red")
+```
+
+### Simulation-4-0 (with interaction term, 99% Outcome)
+```{r}
+
+e.theta1<-NULL
+e.theta2<-NULL
+e.theta3<-NULL
+e.scale<-NULL
+e.gamma1<-NULL
+e.gamma2<-NULL
+e.gamma3<-NULL
+
+for(i in 1:1000){
+  n = 10000
+  data<-data.frame(x1 = rnorm(n,0,1),
+                 x2 = rbinom(n,1,0.5))
+
+  data$y<-rweibull(n,shape = 1.5,scale = exp(5+1.5*data$x1+2.5*data$x2+3.5*data$x1*data$x2))
+  #data$cen<-rep(1,n)
+  
+  qy<-quantile(data$y,probs = 0.99)# 99% outcome
+  data$cen<-ifelse(data$y>qy,0,1)
+  data$y.new<-ifelse(data$y>qy,qy,data$y)
+
+
+  fit1<-coxph(data = data,Surv(y.new,cen)~x1 + x2 +x1*x2)
+  
+  fit2<-survreg(data = data,Surv(y.new,cen)~x1 + x2 + x1*x2,dist = "weibull")
+
+  e.theta1[i]<-fit2$coefficients[2]
+  e.theta2[i]<-fit2$coefficients[3]
+  e.theta3[i]<-fit2$coefficients[4]
+  e.scale[i]<-fit2$scale
+  
+  e.gamma1[i]<-fit1$coefficients[1]
+  e.gamma2[i]<-fit1$coefficients[2]
+  e.gamma3[i]<-fit1$coefficients[3]
+}
+e.theta1<-e.theta1[which(e.theta1<2&e.theta1>1)]
+e.theta2<-e.theta2[which(e.theta2<3&e.theta2>2)]
+e.theta3<-e.theta3[which(e.theta3<4&e.theta3>3)]
+e.scale<-e.scale[which(e.scale<1&e.scale>0.33)]
+
+```
+
+
+### Plot estimated distribution with groud truth
+```{r}
+ggplot()+geom_histogram(aes(e.theta1))+geom_vline(xintercept = 1.5,col = "red")
+ggplot()+geom_histogram(aes(e.theta2))+geom_vline(xintercept = 2.5,col = "red")
+ggplot()+geom_histogram(aes(e.theta3))+geom_vline(xintercept = 3.5,col = "red")
+ggplot()+geom_histogram(aes(e.scale))+geom_vline(xintercept = 1/1.5,col = "red")
+ggplot()+geom_histogram(aes(e.gamma1))+geom_vline(xintercept = 1.5*(-1.5),col = "red")
+ggplot()+geom_histogram(aes(e.gamma2))+geom_vline(xintercept = 2.5*(-1.5),col = "red")
+ggplot()+geom_histogram(aes(e.gamma3))+geom_vline(xintercept = 3.5*(-1.5),col = "red")
+```
+
+### Simulation-4-1 (with interaction term, 90% Outcome)
+```{r}
+
+e.theta1<-NULL
+e.theta2<-NULL
+e.theta3<-NULL
+e.scale<-NULL
+e.gamma1<-NULL
+e.gamma2<-NULL
+e.gamma3<-NULL
+
+for(i in 1:1000){
+  n = 10000
+  data<-data.frame(x1 = rnorm(n,0,1),
+                 x2 = rbinom(n,1,0.5))
+
+  data$y<-rweibull(n,shape = 1.5,scale = exp(5+1.5*data$x1+2.5*data$x2+3.5*data$x1*data$x2))
+  #data$cen<-rep(1,n)
+  
+  qy<-quantile(data$y,probs = 0.9)# 90% outcome
+  data$cen<-ifelse(data$y>qy,0,1)
+  data$y.new<-ifelse(data$y>qy,qy,data$y)
+
+
+  fit1<-coxph(data = data,Surv(y.new,cen)~x1 + x2 +x1*x2)
+  
+  fit2<-survreg(data = data,Surv(y.new,cen)~x1 + x2 + x1*x2,dist = "weibull")
+
+  e.theta1[i]<-fit2$coefficients[2]
+  e.theta2[i]<-fit2$coefficients[3]
+  e.theta3[i]<-fit2$coefficients[4]
+  e.scale[i]<-fit2$scale
+  
+  e.gamma1[i]<-fit1$coefficients[1]
+  e.gamma2[i]<-fit1$coefficients[2]
+  e.gamma3[i]<-fit1$coefficients[3]
+}
+e.theta1<-e.theta1[which(e.theta1<2&e.theta1>1)]
+e.theta2<-e.theta2[which(e.theta2<3&e.theta2>2)]
+e.theta3<-e.theta3[which(e.theta3<4&e.theta3>3)]
+e.scale<-e.scale[which(e.scale<1&e.scale>0.33)]
+
+```
+
+
+### Plot estimated distribution with groud truth
+```{r}
+ggplot()+geom_histogram(aes(e.theta1))+geom_vline(xintercept = 1.5,col = "red")
+ggplot()+geom_histogram(aes(e.theta2))+geom_vline(xintercept = 2.5,col = "red")
+ggplot()+geom_histogram(aes(e.theta3))+geom_vline(xintercept = 3.5,col = "red")
+ggplot()+geom_histogram(aes(e.scale))+geom_vline(xintercept = 1/1.5,col = "red")
+ggplot()+geom_histogram(aes(e.gamma1))+geom_vline(xintercept = 1.5*(-1.5),col = "red")
+ggplot()+geom_histogram(aes(e.gamma2))+geom_vline(xintercept = 2.5*(-1.5),col = "red")
+ggplot()+geom_histogram(aes(e.gamma3))+geom_vline(xintercept = 3.5*(-1.5),col = "red")
+```
+
+
+### Simulation-4-2 (with interaction term, 50% Outcome)
+```{r}
+
+e.theta1<-NULL
+e.theta2<-NULL
+e.theta3<-NULL
+e.scale<-NULL
+e.gamma1<-NULL
+e.gamma2<-NULL
+e.gamma3<-NULL
+
+for(i in 1:1000){
+  n = 10000
+  data<-data.frame(x1 = rnorm(n,0,1),
+                 x2 = rbinom(n,1,0.5))
+
+  data$y<-rweibull(n,shape = 1.5,scale = exp(5+1.5*data$x1+2.5*data$x2+3.5*data$x1*data$x2))
+  #data$cen<-rep(1,n)
+  
+  qy<-quantile(data$y,probs = 0.5)# 50% outcome
+  data$cen<-ifelse(data$y>qy,0,1)
+  data$y.new<-ifelse(data$y>qy,qy,data$y)
+
+
+  fit1<-coxph(data = data,Surv(y.new,cen)~x1 + x2 +x1*x2)
+  
+  fit2<-survreg(data = data,Surv(y.new,cen)~x1 + x2 + x1*x2,dist = "weibull")
+
+  e.theta1[i]<-fit2$coefficients[2]
+  e.theta2[i]<-fit2$coefficients[3]
+  e.theta3[i]<-fit2$coefficients[4]
+  e.scale[i]<-fit2$scale
+  
+  e.gamma1[i]<-fit1$coefficients[1]
+  e.gamma2[i]<-fit1$coefficients[2]
+  e.gamma3[i]<-fit1$coefficients[3]
+}
+e.theta1<-e.theta1[which(e.theta1<2&e.theta1>1)]
+e.theta2<-e.theta2[which(e.theta2<3&e.theta2>2)]
+e.theta3<-e.theta3[which(e.theta3<4&e.theta3>3)]
+e.scale<-e.scale[which(e.scale<1&e.scale>0.33)]
+
+```
+
+
+### Plot estimated distribution with groud truth
+```{r}
+ggplot()+geom_histogram(aes(e.theta1))+geom_vline(xintercept = 1.5,col = "red")
+ggplot()+geom_histogram(aes(e.theta2))+geom_vline(xintercept = 2.5,col = "red")
+ggplot()+geom_histogram(aes(e.theta3))+geom_vline(xintercept = 3.5,col = "red")
+ggplot()+geom_histogram(aes(e.scale))+geom_vline(xintercept = 1/1.5,col = "red")
+ggplot()+geom_histogram(aes(e.gamma1))+geom_vline(xintercept = 1.5*(-1.5),col = "red")
+ggplot()+geom_histogram(aes(e.gamma2))+geom_vline(xintercept = 2.5*(-1.5),col = "red")
+ggplot()+geom_histogram(aes(e.gamma3))+geom_vline(xintercept = 3.5*(-1.5),col = "red")
+```
+
+
+
+### Simulation-4-3 (with interaction term, 20% Outcome)
+```{r}
+
+e.theta1<-NULL
+e.theta2<-NULL
+e.theta3<-NULL
+e.scale<-NULL
+e.gamma1<-NULL
+e.gamma2<-NULL
+e.gamma3<-NULL
+
+for(i in 1:1000){
+  n = 10000
+  data<-data.frame(x1 = rnorm(n,0,1),
+                 x2 = rbinom(n,1,0.5))
+
+  data$y<-rweibull(n,shape = 1.5,scale = exp(5+1.5*data$x1+2.5*data$x2+3.5*data$x1*data$x2))
+  #data$cen<-rep(1,n)
+  
+  qy<-quantile(data$y,probs = 0.2)# 20% outcome
+  data$cen<-ifelse(data$y>qy,0,1)
+  data$y.new<-ifelse(data$y>qy,qy,data$y)
+
+
+  fit1<-coxph(data = data,Surv(y.new,cen)~x1 + x2 +x1*x2)
+  
+  fit2<-survreg(data = data,Surv(y.new,cen)~x1 + x2 + x1*x2,dist = "weibull")
+
+  e.theta1[i]<-fit2$coefficients[2]
+  e.theta2[i]<-fit2$coefficients[3]
+  e.theta3[i]<-fit2$coefficients[4]
+  e.scale[i]<-fit2$scale
+  
+  e.gamma1[i]<-fit1$coefficients[1]
+  e.gamma2[i]<-fit1$coefficients[2]
+  e.gamma3[i]<-fit1$coefficients[3]
+}
+e.theta1<-e.theta1[which(e.theta1<2&e.theta1>1)]
+e.theta2<-e.theta2[which(e.theta2<3&e.theta2>2)]
+e.theta3<-e.theta3[which(e.theta3<4&e.theta3>3)]
+e.scale<-e.scale[which(e.scale<1&e.scale>0.33)]
+
+```
+
+
+### Plot estimated distribution with groud truth
+```{r}
+ggplot()+geom_histogram(aes(e.theta1))+geom_vline(xintercept = 1.5,col = "red")
+ggplot()+geom_histogram(aes(e.theta2))+geom_vline(xintercept = 2.5,col = "red")
+ggplot()+geom_histogram(aes(e.theta3))+geom_vline(xintercept = 3.5,col = "red")
+ggplot()+geom_histogram(aes(e.scale))+geom_vline(xintercept = 1/1.5,col = "red")
+ggplot()+geom_histogram(aes(e.gamma1))+geom_vline(xintercept = 1.5*(-1.5),col = "red")
+ggplot()+geom_histogram(aes(e.gamma2))+geom_vline(xintercept = 2.5*(-1.5),col = "red")
+ggplot()+geom_histogram(aes(e.gamma3))+geom_vline(xintercept = 3.5*(-1.5),col = "red")
+```
+
+
+
+### Simulation-4-4 (with interaction term, 8% Outcome)
+```{r}
+
+e.theta1<-NULL
+e.theta2<-NULL
+e.theta3<-NULL
+e.scale<-NULL
+e.gamma1<-NULL
+e.gamma2<-NULL
+e.gamma3<-NULL
+
+for(i in 1:1000){
+  n = 10000
+  data<-data.frame(x1 = rnorm(n,0,1),
+                 x2 = rbinom(n,1,0.5))
+
+  data$y<-rweibull(n,shape = 1.5,scale = exp(5+1.5*data$x1+2.5*data$x2+3.5*data$x1*data$x2))
+  #data$cen<-rep(1,n)
+  
+  qy<-quantile(data$y,probs = 0.08)# 8% outcome
+  data$cen<-ifelse(data$y>qy,0,1)
+  data$y.new<-ifelse(data$y>qy,qy,data$y)
+
+
+  fit1<-coxph(data = data,Surv(y.new,cen)~x1 + x2 +x1*x2)
+  
+  fit2<-survreg(data = data,Surv(y.new,cen)~x1 + x2 + x1*x2,dist = "weibull")
+
+  e.theta1[i]<-fit2$coefficients[2]
+  e.theta2[i]<-fit2$coefficients[3]
+  e.theta3[i]<-fit2$coefficients[4]
+  e.scale[i]<-fit2$scale
+  
+  e.gamma1[i]<-fit1$coefficients[1]
+  e.gamma2[i]<-fit1$coefficients[2]
+  e.gamma3[i]<-fit1$coefficients[3]
+}
+e.theta1<-e.theta1[which(e.theta1<2&e.theta1>1)]
+e.theta2<-e.theta2[which(e.theta2<3&e.theta2>2)]
+e.theta3<-e.theta3[which(e.theta3<4&e.theta3>3)]
+e.scale<-e.scale[which(e.scale<1&e.scale>0.33)]
+
+```
+
+
+### Plot estimated distribution with groud truth
+```{r}
+ggplot()+geom_histogram(aes(e.theta1))+geom_vline(xintercept = 1.5,col = "red")
+ggplot()+geom_histogram(aes(e.theta2))+geom_vline(xintercept = 2.5,col = "red")
+ggplot()+geom_histogram(aes(e.theta3))+geom_vline(xintercept = 3.5,col = "red")
+ggplot()+geom_histogram(aes(e.scale))+geom_vline(xintercept = 1/1.5,col = "red")
+ggplot()+geom_histogram(aes(e.gamma1))+geom_vline(xintercept = 1.5*(-1.5),col = "red")
+ggplot()+geom_histogram(aes(e.gamma2))+geom_vline(xintercept = 2.5*(-1.5),col = "red")
+ggplot()+geom_histogram(aes(e.gamma3))+geom_vline(xintercept = 3.5*(-1.5),col = "red")
+```
+
