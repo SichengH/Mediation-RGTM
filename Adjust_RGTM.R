@@ -279,7 +279,7 @@ for(j in 1:n){
       
       
       
-      
+    }     
      
     results<-data.frame(cutoff,
                         e1.te2,e1.te,e1.pnde,e1.tnie,e1.tnde,e1.pnie,e1.pm,
@@ -298,7 +298,7 @@ for(j in 1:n){
                         interaction = 1)
     results$iter<-j
     rd11<-rbind(rd11,results)
-    }
+
     
   }, error=function(e){} )
   
@@ -515,7 +515,7 @@ for(j in 1:n){
       e3.theta4[i]<-fit3$yreg_fit$coefficients[4]
       
       
-      
+    }      
       
       
       
@@ -536,7 +536,6 @@ for(j in 1:n){
                           interaction = 1)
       results$iter<-j
       rd10<-rbind(rd10,results)
-    }
     
   }, error=function(e){} )
   

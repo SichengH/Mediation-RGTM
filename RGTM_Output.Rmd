@@ -1,0 +1,32 @@
+---
+title: "RGTM_Output"
+author: "Sicheng Hao"
+date: "11/29/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+library(data.table)
+library(ggplot2)
+```
+
+```{r}
+rd.11<-fread("rd11.csv")
+rd.10<-fread("rd10.csv")
+#e1 biased
+#e2 gound truth
+#e3 adjusted
+
+```
+
+```{r}
+ggplot(data = rd.11)+
+  geom_histogram(aes(x = e3.te))+
+  facet_wrap(~cutoff)
+```
+
+
+```{r}
+
+
+```
