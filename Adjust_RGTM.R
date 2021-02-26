@@ -72,7 +72,7 @@ summ<-summary(fit1)
 
 
 
-n<-1000
+n<-5000
 # Simulation:
 
 # Method: 
@@ -543,7 +543,7 @@ for(j in 1:n){
 rd10$method<-"Adjust_RGTM_H0"#
 
 setwd("/Users/sichenghao/Documents/GitHub/Mediation-RGTM/")
-fwrite(rd10,file = "rd10.csv")
-fwrite(rd11,file = "rd11.csv")
+#fwrite(rd10,file = "rd10.csv")
+fwrite(rd11,file = "rd11_weibull_5000.csv")
 
 
