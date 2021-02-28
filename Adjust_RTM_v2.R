@@ -23,7 +23,7 @@ theta4<<--0.02 # cov
 cutoff<-c(90,110,130,150,1000)
 
 #
-data<-simulation.function.v5(20000,cutoff = cutoff[5])
+data<-simulation.function.v52(20000,cutoff = cutoff[5])
 data$ldlc_change<-data$ldlc12 - data$ldlcb
 #data$ldlc_change_m<-data$ldlc12m - data$ldlcm
 
@@ -135,7 +135,7 @@ for(j in 1:n){
     
     cutoff<-c(90,110,130,150,1000)
     for(i in 1:5){
-      data<-simulation.function.v5(20000,cutoff = cutoff[i])
+      data<-simulation.function.v52(20000,cutoff = cutoff[i])
       data$ldlc_change<-data$ldlc12 - data$ldlcb
      # data$ldlc_change_m<-data$ldlc12m - data$ldlcm
       #fit<-lm(data,formula = ldlc_change_m~ldlc_change+ldlcb+drug)
@@ -233,8 +233,7 @@ for(j in 1:n){
       e2.theta4[i]<-fit2$yreg_fit$coefficients[4]
       
       
-      data0<-data%>%filter(drug == 0)
-      m.fit<-lm(data = data0,ldlc_change~ldlcb)
+      m.fit<-lm(data = data,ldlc_change~ldlcb+drug)
       data$ldlc_change_adj<-predict(m.fit,newdata = data)
       
       fit3<-regmedint(data = data,
@@ -314,3 +313,15 @@ rd11$method<-"1_0_adj"#
 #e1 Interaction
 #e2 No interaction
 #e3 adjusted with interaction
+
+
+setwd("/Users/sichenghao/Documents/GitHub/Mediation-RGTM/")
+
+fwrite(rd11,file = "v2-2.csv")
+
+#v2-0: messed up adj
+#v2-1: updated adj, correctly
+#v2-2: CATE beta1
+
+
+

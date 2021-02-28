@@ -15,49 +15,29 @@ library(ggridges)
 library(tidyr)
 ```
 ## Find out where is the bias
+
 ```{r, echo=F}
-rd.11<-fread("rd11.csv")
-rd.10<-fread("rd10.csv")
+rd.11<-fread("v2-2.csv")
+#rd.10<-fread("rd10.csv")
 #e1 biased
 #e2 gound truth
 #e3 adjusted
-rd.10$cutoff<-as.factor(rd.10$cutoff)
-levels(rd.10$cutoff)[5]<-"No cutoff"
-rd.10$cutoff.n<-as.numeric(rd.10$cutoff)
+# rd.10$cutoff<-as.factor(rd.10$cutoff)
+# levels(rd.10$cutoff)[5]<-"No cutoff"
+# rd.10$cutoff.n<-as.numeric(rd.10$cutoff)
 
 rd.11$cutoff<-as.factor(rd.11$cutoff)
 levels(rd.11$cutoff)[5]<-"No cutoff"
 rd.11$cutoff.n<-as.numeric(rd.11$cutoff)
 ```
 
-### Treatment on Mediator
 
-#### No Heterogeinity 
-```{r}
-data<-rd.10%>%
-  select(cutoff,e1.beta1,e2.beta1, e3.beta1)%>%
-  gather("method","beta1",-cutoff)
-
-data$cutoff<-as.factor(data$cutoff)
-levels(data$cutoff)[5]<-"No cutoff"
-data$cutoff.n<-as.numeric(data$cutoff)
-
-ggplot(data = data, aes(x = beta1, y = cutoff.n, fill = cutoff)) +
-   geom_density_ridges(alpha = 0.5)+
-  facet_wrap(~method)+
-  scale_y_discrete(limit = c(1:10),labels = data$cutoff)+
-  coord_flip()+
-  theme(legend.position = "bottom",axis.text.x = element_blank(),
-        axis.title.x=element_blank())+
-  xlab("Treatment on Mediator")+
-  ggtitle("E1")
-```
 
 #### With Treatment Heterogeinity 
 
 ```{r}
 data<-rd.11%>%
-  transmute(cutoff,raw.estimate = e1.beta1,truth = e2.beta1, adjusted.estimate = e3.beta1)%>%
+  transmute(cutoff,interaction = e1.beta1,no.inter = e2.beta1, adjusted = e3.beta1)%>%
   gather("method","beta1",-cutoff)
 
 data$cutoff<-as.factor(data$cutoff)
@@ -83,7 +63,7 @@ ggplot(data = data, aes(x = beta1, y = cutoff.n, fill = cutoff)) +
 ```{r}
 #theta2
 data<-rd.11%>%
-  transmute(cutoff,raw.estimate = e1.theta2,truth = e2.theta2, adjusted.estimate = e3.theta2)%>%
+  transmute(cutoff,interaction = e1.theta2,no.inter = e2.theta2, adjusted = e3.theta2)%>%
   gather("method","theta2",-cutoff)
 
 data$cutoff<-as.factor(data$cutoff)
@@ -104,7 +84,7 @@ ggplot(data = data, aes(x = theta2, y = cutoff.n, fill = cutoff)) +
 ```{r}
 ### theta3
 data<-rd.11%>%
-  transmute(cutoff,raw.estimate = e1.theta3,truth = e2.theta3, adjusted.estimate = e3.theta3)%>%
+  transmute(cutoff,interaction = e1.theta3,no.inter = e2.theta3, adjusted = e3.theta3)%>%
   gather("method","theta3",-cutoff)
 
 data$cutoff<-as.factor(data$cutoff)
@@ -129,7 +109,7 @@ ggplot(data = data, aes(x = theta3, y = cutoff.n, fill = cutoff)) +
 ```{r}
 
 data<-rd.11%>%
-  transmute(cutoff,raw.estimate = e1.theta1,truth = e2.theta1, adjusted.estimate = e3.theta1)%>%
+  transmute(cutoff,interaction = e1.theta1,no.inter = e2.theta1, adjusted = e3.theta1)%>%
   gather("method","theta1",-cutoff)
 
 data$cutoff<-as.factor(data$cutoff)
@@ -151,7 +131,7 @@ ggplot(data = data, aes(x = theta1, y = cutoff.n, fill = cutoff)) +
 ### PM
 ```{r}
 data<-rd.11%>%
-  transmute(cutoff,raw.estimate = e1.pm,truth = e2.pm, adjusted.estimate = e3.pm)%>%
+  transmute(cutoff,interaction = e1.pm,no.inter = e2.pm, adjusted = e3.pm)%>%
   gather("method","Prop.Mediated",-cutoff)
 
 data$cutoff<-as.factor(data$cutoff)
