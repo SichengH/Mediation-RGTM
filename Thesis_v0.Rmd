@@ -1,0 +1,191 @@
+---
+title             : "Mediation analysis with regression toward the mean"
+shorttitle        : "Mediation Biomarker"
+
+author: 
+  - name          : "Sicheng Hao"
+    affiliation   : "1"
+    corresponding : yes    # Define only one corresponding author
+    address       : "Postal address"
+    email         : "hao.sic@northeastern.edu"
+    role:         # Contributorship roles (e.g., CRediT, https://casrai.org/credit/)
+      - Conceptualization
+      - Writing - Original Draft Preparation
+      - Writing - Review & Editing
+  - name          : "Sicheng Hao"
+    affiliation   : "1,2"
+    role:
+      - Writing - Review & Editing
+
+affiliation:
+  - id            : "1"
+    institution   : "Northeastern University"
+  - id            : "2"
+    institution   : "Mass General Brigham"
+
+authornote: |
+  Add complete departmental affiliations for each author here. Each new line herein must be indented, like this line.
+
+  Enter author note here.
+
+abstract: 
+  Figure out
+
+
+  
+  
+keywords          : "keywords"
+wordcount         : "X"
+
+bibliography      : ["r-references.bib"]
+
+floatsintext      : no
+figurelist        : no
+tablelist         : no
+footnotelist      : no
+linenumbers       : yes
+mask              : no
+draft             : no
+
+documentclass     : "apa6"
+classoption       : "man"
+output            : papaja::apa6_pdf
+---
+
+```{r setup, include = FALSE}
+library("papaja")
+library(tinytex)
+options(tinytex.verbose = TRUE)
+r_refs("r-references.bib")
+```
+
+```{r analysis-preferences}
+
+knitr::opts_chunk$set(cache.extra = knitr::rand_seed)
+
+```
+
+
+
+
+# Chapter One: Background
+
+# Chapter Two: Current Method
+
+## 2.1 Causal Mediation Analysis
+
+Given gY is a link function for estimator.
+
+Total Effect (TE)
+
+$$TE = gY(E[Y_{a = 1} | C = c] - E[Y_{a = 0} | C = c] )$$
+
+Total Natural Indirect Effect (TNIE), where interaction effect are credit to indirect effect.
+
+
+$$TNIE = gY(E[Y_{a = 1,M_a = 1} | C = c] - E[Y_{a = 1,M_a = 0} | C = c] )$$
+
+Pure Natural Direct Effect (PNDE), difference between TE and TNIE.
+
+$$PNDE = gY(E[Y_{a = 1,M_a = 0} | C = c] - E[Y_{a = 0,M_a = 0} | C = c] )$$
+
+## 2.2 Assumptions of causal mediation analysis
+
+### 2.2.1 Causal Consistency
+
+### 2.2.2 Positivity
+
+### 2.2.3 Ignorability 
+
+## 2.3 Result of causal mediation analysis (prelimnary results)
+
+
+
+## 2.4 Conclusion from prelimnary results
+
+1. Direct effect exist, indicate there is additional pathway\n
+2. Interaction effect is significant, indicate there is possible difference in mechanism\n
+3. Relationship between risk and post-randomization LDLC in the control group behaves counter intuitively\n
+
+# Chapter Three: 
+
+## 3.1 Possible reasons for prelimnary results / Problem of using current method
+
+### 3.1.1 Multiple Mediator
+
+Multiple mediator could explain the large direct effect, but from single mediator analysis, except APOB we don't have any candidate for second mediator, and APOB and LDLC belong to the same pathway. \n
+
+
+### 3.1.2 RTM / unstable LDLC
+
+1. Observe that LDLC measure is unstable.\n
+
+2. Experiment has selected people with LDLC under 130(unit)\n
+
+Combining, measurement are subject to regression toward the mean. \n
+
+### 3.1.3 Heterogeneity
+
+
+## 3.2 Simulation
+
+### 3.2.1 Simulation Framework
+
+#### 3.2.1.1 Exposure and outcome
+
+Random assigned exposure in 50:50 ratio. Using survival outcome.
+
+#### 3.2.1.2 Mediator and mediating effect
+
+Mediator simulation:
+
+Populations mean
+$$LDLCmean \sim N(m_0,sd_0) $$
+
+Individual mean in a short period / cumulative LDLC
+
+$$LDLCmean^* \sim LDLCmean + N(0,sd^*) $$
+Individual Measurement
+
+$$LDLCmeasured_i \sim LDLCmean_i + N(0,sd_i)$$
+
+How to simulate risk.
+
+1. Use measurement\n
+
+Whatever the measurements are, whatever the risk is. Problem is risk vary quite a lot.Not possible to make mistake in this case. And it is not what we expected in the real data.  
+
+2. Use mean\n positivist problem, data has no one's LDLC dropped naurally. 
+
+3. Use something in between, short term mean.\n
+
+
+
+#### 3.2.1.3 Parameter
+
+1. Assume no direct effect, no interaction term.\n
+2. Using survival outcome\n
+
+
+![an image caption Source: Ultimate Funny Dog Videos Compilation 2013.](images/week3/silly-dog.png)
+
+
+# Chapter Four: Implementation 
+
+# Chapter Five Discussion
+
+
+Regression to the mean[@barnett2005regression]
+
+
+
+\newpage
+
+# References
+
+\begingroup
+\setlength{\parindent}{-0.5in}
+\setlength{\leftskip}{0.5in}
+
+<div id="refs" custom-style="Bibliography"></div>
+\endgroup

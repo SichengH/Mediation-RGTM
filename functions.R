@@ -112,8 +112,8 @@ simulation.function.v42<-function(sample.size = 20000,cutoff = 1000){
   }
   
   data0<-data0[1:n,]
-  data0$ldlc12m<-data0$ldlcm+rnorm(n,0,15)#12m has higher variacne then ldlcm due to possible life style change after entering the trial
-  data0$ldlc12<-data0$ldlc12m+rnorm(n,0,16)#add vairance of rgtm
+  data0$ldlc12m<-data0$ldlcm+rnorm(n,0,10)#12m has higher variacne then ldlcm due to possible life style change after entering the trial
+  data0$ldlc12<-data0$ldlc12m+rnorm(n,0,12)#add vairance of rgtm
   #treatment arm
   for(i in 1:100){
     #print(i)
@@ -128,8 +128,8 @@ simulation.function.v42<-function(sample.size = 20000,cutoff = 1000){
     }
   }
   data1<-data1[1:n,]
-  data1$ldlc12m<-data1$ldlcm - 0.7*data1$ldlcb +30 + rnorm(n,0,15)
-  data1$ldlc12<-data1$ldlc12m+rnorm(n,0,sd = 16)
+  data1$ldlc12m<-data1$ldlcm - 0.7*data1$ldlcb +30 + rnorm(n,0,10)
+  data1$ldlc12<-data1$ldlc12m+rnorm(n,0,sd = 12)
   data0$drug = 0
   data1$drug = 1
   data = rbind(data0,data1)
@@ -158,8 +158,8 @@ simulation.function.v4<-function(sample.size = 20000,cutoff = 1000){
   }
   
   data0<-data0[1:n,]
-  data0$ldlc12m<-data0$ldlcm+rnorm(n,0,15)#12m has higher variance then ldlcm due to possible life style change after entering the trial
-  data0$ldlc12<-data0$ldlc12m+rnorm(n,0,16)#add variance of rgtm
+  data0$ldlc12m<-data0$ldlcm+rnorm(n,0,10)#12m has higher variance then ldlcm due to possible life style change after entering the trial
+  data0$ldlc12<-data0$ldlc12m+rnorm(n,0,12)#add variance of rgtm
   #treatment arm
   for(i in 1:100){
     #print(i)
@@ -174,8 +174,8 @@ simulation.function.v4<-function(sample.size = 20000,cutoff = 1000){
     }
   }
   data1<-data1[1:n,]
-  data1$ldlc12m<-data1$ldlcm - 47 + rnorm(n,0,15)
-  data1$ldlc12<-data1$ldlc12m+rnorm(n,0,sd = 16)
+  data1$ldlc12m<-data1$ldlcm - 47 + rnorm(n,0,10)
+  data1$ldlc12<-data1$ldlc12m+rnorm(n,0,sd = 12)
   data0$drug = 0
   data1$drug = 1
   data = rbind(data0,data1)

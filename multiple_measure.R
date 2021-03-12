@@ -1,5 +1,4 @@
 
-#cutoff<-c(80,90,100,110,120,130,140,150,160,1000)
 
 library(ggplot2)
 library(dplyr)
@@ -7,6 +6,15 @@ library(data.table)
 library(survival)
 library(DiagrammeR)
 library(regmedint)
+
+## How to solve the phantom direct effect 
+## 0. Do nothing, nice to have compare
+## 1. Have multiple measurement before enrollment
+## 2. Have long follow-up, multiple measurement post-randomization
+## 3. Both 
+## 4. Impute from other variable
+## 5. Bayesian Stuff
+## 6. 
 
 #Set Up
 p<<-1.4
@@ -149,7 +157,7 @@ for(j in 1:n){
       data$ldlc_change<-data$ldlc12 - data$ldlcb
       data$ldlc_change_m<-data$ldlc12m - data$ldlcm
       #fit<-lm(data,formula = ldlc_change_m~ldlc_change+ldlcb+drug)
-     # data$ldlc_change_m_pred<-predict(fit,data)
+      # data$ldlc_change_m_pred<-predict(fit,data)
       data$cen<-rep(1,20000)
       #data$d<-rep(0,20000)
       #data$logldlcb<-log(data$ldlcb)

@@ -16,8 +16,8 @@ library(tidyr)
 ```
 ## Find out where is the bias
 
-```{r, echo=F}
-rd.11<-fread("v2-2.csv")
+```{r}
+rd.11<-fread("v2-1.csv")
 #rd.10<-fread("rd10.csv")
 #e1 biased
 #e2 gound truth
@@ -147,4 +147,47 @@ ggplot(data = data, aes(x = Prop.Mediated, y = cutoff.n, fill = cutoff)) +
         axis.title.x=element_blank())+
   xlab("Mediator on Outcome")+
   ggtitle("TODO")
+```
+
+
+### TE
+```{r}
+data<-rd.11%>%
+  transmute(cutoff,interaction = e1.te,no.inter = e2.te, adjusted = e3.te)%>%
+  gather("method","Prop.Mediated",-cutoff)
+
+data$cutoff<-as.factor(data$cutoff)
+levels(data$cutoff)[5]<-"No cutoff"
+data$cutoff.n<-as.numeric(data$cutoff)
+
+ggplot(data = data, aes(x = Prop.Mediated, y = cutoff.n, fill = cutoff)) +
+   geom_density_ridges(alpha = 0.5)+
+  facet_wrap(~method)+
+  scale_y_discrete(limit = c(1:10),labels = data$cutoff)+
+  coord_flip()+
+  theme(legend.position = "bottom",axis.text.x = element_blank(),
+        axis.title.x=element_blank())+
+  xlab("Mediator on Outcome")+
+  ggtitle("Total Effect from Package")
+```
+
+
+```{r}
+data<-rd.11%>%
+  transmute(cutoff,interaction = e1.te2,no.inter = e2.te2, adjusted = e3.te2)%>%
+  gather("method","Prop.Mediated",-cutoff)
+
+data$cutoff<-as.factor(data$cutoff)
+levels(data$cutoff)[5]<-"No cutoff"
+data$cutoff.n<-as.numeric(data$cutoff)
+
+ggplot(data = data, aes(x = Prop.Mediated, y = cutoff.n, fill = cutoff)) +
+   geom_density_ridges(alpha = 0.5)+
+  facet_wrap(~method)+
+  scale_y_discrete(limit = c(1:10),labels = data$cutoff)+
+  coord_flip()+
+  theme(legend.position = "bottom",axis.text.x = element_blank(),
+        axis.title.x=element_blank())+
+  xlab("Mediator on Outcome")+
+  ggtitle("Total Effect from Regression")
 ```
