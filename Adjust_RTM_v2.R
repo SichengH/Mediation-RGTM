@@ -23,7 +23,7 @@ theta4<<--0.02 # cov
 cutoff<-c(90,110,130,150,1000)
 
 #
-data<-simulation.function.v4(20000,cutoff = cutoff[5])
+data<-simulation.function.v4(20000,cutoff = cutoff[3])
 data$ldlc_change<-data$ldlc12 - data$ldlcb
 
 data$ldlc_change_m<-data$ldlc12m - data$ldlcm
@@ -242,10 +242,18 @@ for(j in 1:n){
       e2.theta3[i]<-fit2$yreg_fit$coefficients[5]
       e2.theta4[i]<-fit2$yreg_fit$coefficients[4]
       
+      data0<-data%>%filter(drug == 0)
       
-      m.fit<-lm(data = data,ldlc_change~ldlcb+drug)
-      data$ldlc_change_adj<-predict(m.fit,newdata = data)
       
+      m.fit<-lm(data = data0,ldlc_change~ldlcb)
+      data$ldlc_change_adj<-data$ldlc_change - 
+        data$ldlcb * m.fit$coefficients[2] - 
+        rep(m.fit$coefficients[1],nrow(data))
+ #ggplot(data,aes(x = ldlcb,y = ldlc_change_adj,col = drug))+
+ #  geom_point(alpha = 0.1)+
+ #  geom_smooth(method= "lm")
+ 
+ 
       fit3<-regmedint(data = data,
                       ## Variables
                       yvar = "y1",

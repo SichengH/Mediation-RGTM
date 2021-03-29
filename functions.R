@@ -1,3 +1,57 @@
+
+
+simulation.function.v43<-function(sample.size = 20000,cutoff = 1000){
+  n<-sample.size/2
+  osp = 2
+  n0<-0
+  n1<-0
+  data0<-NULL
+  data1<-NULL
+  #control arm
+  for(i in 1:100){
+    #print(i)
+    if(n0<n){
+      ldlcm=rnorm(n = n*osp,mean = 116,sd = 14.2)#mean distribution of LDLC
+      d0<-data.frame(ldlcm,ldlcb=rnorm(n = n*osp,mean = ldlcm,sd = 16))
+      d0<-d0%>%filter(ldlcb<cutoff)
+      data0<-rbind(data0,d0)
+      n0<-nrow(data0)
+    } else {
+      break
+    }
+  }
+  
+  data0<-data0[1:n,]
+  data0$ldlc12m<-data0$ldlcm+rnorm(n,0,10)#12m has higher variance then ldlcm due to possible life style change after entering the trial
+  data0$ldlc121<-data0$ldlc12m+rnorm(n,0,12)#add variance of rgtm
+  data0$ldlc122<-data0$ldlc12m+rnorm(n,0,12)#add variance of rgtm
+  data0$ldlc123<-data0$ldlc12m+rnorm(n,0,12)#add variance of rgtm
+  #treatment arm
+  for(i in 1:100){
+    #print(i)
+    if(n1<n){
+      ldlcm=rnorm(n = n*osp,mean = 116,sd = 14.2)
+      d1<-data.frame(ldlcm,ldlcb=rnorm(n = n*osp,mean = ldlcm,sd = 16))
+      d1<-d1%>%filter(ldlcb<cutoff)
+      data1<-rbind(data1,d1)
+      n1<-nrow(data1)
+    } else {
+      break
+    }
+  }
+  data1<-data1[1:n,]
+  data1$ldlc12m<-data1$ldlcm - 47 + rnorm(n,0,10)
+  data1$ldlc121<-data1$ldlc12m+rnorm(n,0,sd = 12)
+  data1$ldlc122<-data1$ldlc12m+rnorm(n,0,sd = 12)
+  data1$ldlc123<-data1$ldlc12m+rnorm(n,0,sd = 12)
+  data0$drug = 0
+  data1$drug = 1
+  data = rbind(data0,data1)
+  data<-data%>%mutate(ldlc12 = (ldlc121+ldlc122+ldlc123)/3)
+  #data<-data%>%mutate(ldlc_change = ldlc12 - ldlcb,ldlc_change.m = ldlc12m - ldlcb)
+  return(data)
+}
+
 simulation.function.v52<-function(sample.size = 20000,cutoff = 1000){
   n<-sample.size/2
   osp = 2

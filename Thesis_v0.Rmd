@@ -29,7 +29,14 @@ authornote: |
   Enter author note here.
 
 abstract: 
-  Figure out
+  Old: 
+  -LDLC as mediator, run mediation analysis with survival outcome
+  -Interaction effect, hard to explain
+  -Assumption is coming from selection and RTM
+  
+  New:
+  1. Add RTM adjustment to simulation(method from paper)
+  2. 
 
 
   

@@ -17,7 +17,7 @@ library(tidyr)
 ## Find out where is the bias
 
 ```{r}
-rd.11<-fread("v2-1.csv")
+rd.11<-fread("v3-1.csv")
 #rd.10<-fread("rd10.csv")
 #e1 biased
 #e2 gound truth
@@ -33,11 +33,11 @@ rd.11$cutoff.n<-as.numeric(rd.11$cutoff)
 
 
 
-#### With Treatment Heterogeinity 
+#### Without Treatment Heterogeinity 
 
 ```{r}
 data<-rd.11%>%
-  transmute(cutoff,interaction = e1.beta1,no.inter = e2.beta1, adjusted = e3.beta1)%>%
+  transmute(cutoff,interaction = e1.beta1,multiple.followup = e2.beta1, adjusted = e3.beta1)%>%
   gather("method","beta1",-cutoff)
 
 data$cutoff<-as.factor(data$cutoff)
@@ -52,7 +52,7 @@ ggplot(data = data, aes(x = beta1, y = cutoff.n, fill = cutoff)) +
   theme(legend.position = "bottom",axis.text.x = element_blank(),
         axis.title.x=element_blank())+
   xlab("Treatment on Mediator")+
-  ggtitle("TODO")
+  ggtitle("Beta1")
 ```
 
 
@@ -63,7 +63,7 @@ ggplot(data = data, aes(x = beta1, y = cutoff.n, fill = cutoff)) +
 ```{r}
 #theta2
 data<-rd.11%>%
-  transmute(cutoff,interaction = e1.theta2,no.inter = e2.theta2, adjusted = e3.theta2)%>%
+  transmute(cutoff,interaction = e1.theta2,multiple.followup = e2.theta2, adjusted = e3.theta2)%>%
   gather("method","theta2",-cutoff)
 
 data$cutoff<-as.factor(data$cutoff)
@@ -78,13 +78,13 @@ ggplot(data = data, aes(x = theta2, y = cutoff.n, fill = cutoff)) +
   theme(legend.position = "bottom",axis.text.x = element_blank(),
         axis.title.x=element_blank())+
   xlab("Mediator on Outcome")+
-  ggtitle("TODO")
+  ggtitle("theta2")
 ```
 
 ```{r}
 ### theta3
 data<-rd.11%>%
-  transmute(cutoff,interaction = e1.theta3,no.inter = e2.theta3, adjusted = e3.theta3)%>%
+  transmute(cutoff,interaction = e1.theta3,multiple.followup = e2.theta3, adjusted = e3.theta3)%>%
   gather("method","theta3",-cutoff)
 
 data$cutoff<-as.factor(data$cutoff)
@@ -99,7 +99,7 @@ ggplot(data = data, aes(x = theta3, y = cutoff.n, fill = cutoff)) +
   theme(legend.position = "bottom",axis.text.x = element_blank(),
         axis.title.x=element_blank())+
   xlab("Mediator on Outcome")+
-  ggtitle("TODO")
+  ggtitle("theta3")
 ```
 
 
@@ -109,7 +109,7 @@ ggplot(data = data, aes(x = theta3, y = cutoff.n, fill = cutoff)) +
 ```{r}
 
 data<-rd.11%>%
-  transmute(cutoff,interaction = e1.theta1,no.inter = e2.theta1, adjusted = e3.theta1)%>%
+  transmute(cutoff,interaction = e1.theta1,multiple.followup = e2.theta1, adjusted = e3.theta1)%>%
   gather("method","theta1",-cutoff)
 
 data$cutoff<-as.factor(data$cutoff)
@@ -124,14 +124,14 @@ ggplot(data = data, aes(x = theta1, y = cutoff.n, fill = cutoff)) +
   theme(legend.position = "bottom",axis.text.x = element_blank(),
         axis.title.x=element_blank())+
   xlab("Mediator on Outcome")+
-  ggtitle("TODO")
+  ggtitle("theta1")
 ```
 
 
 ### PM
 ```{r}
 data<-rd.11%>%
-  transmute(cutoff,interaction = e1.pm,no.inter = e2.pm, adjusted = e3.pm)%>%
+  transmute(cutoff,interaction = e1.pm,multiple.followup = e2.pm, adjusted = e3.pm)%>%
   gather("method","Prop.Mediated",-cutoff)
 
 data$cutoff<-as.factor(data$cutoff)
@@ -146,14 +146,14 @@ ggplot(data = data, aes(x = Prop.Mediated, y = cutoff.n, fill = cutoff)) +
   theme(legend.position = "bottom",axis.text.x = element_blank(),
         axis.title.x=element_blank())+
   xlab("Mediator on Outcome")+
-  ggtitle("TODO")
+  ggtitle("PM")
 ```
 
 
 ### TE
 ```{r}
 data<-rd.11%>%
-  transmute(cutoff,interaction = e1.te,no.inter = e2.te, adjusted = e3.te)%>%
+  transmute(cutoff,interaction = e1.te,multiple.followup = e2.te, adjusted = e3.te)%>%
   gather("method","Prop.Mediated",-cutoff)
 
 data$cutoff<-as.factor(data$cutoff)
@@ -174,7 +174,7 @@ ggplot(data = data, aes(x = Prop.Mediated, y = cutoff.n, fill = cutoff)) +
 
 ```{r}
 data<-rd.11%>%
-  transmute(cutoff,interaction = e1.te2,no.inter = e2.te2, adjusted = e3.te2)%>%
+  transmute(cutoff,interaction = e1.te2,multiple.followup = e2.te2, adjusted = e3.te2)%>%
   gather("method","Prop.Mediated",-cutoff)
 
 data$cutoff<-as.factor(data$cutoff)
