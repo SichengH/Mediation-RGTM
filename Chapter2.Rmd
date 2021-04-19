@@ -1,0 +1,45 @@
+---
+title: "Chapter2"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+library(ggplot2)
+library(dplyr)
+n<<-100 # increase for final output
+```
+
+# Appendix for Chapter Two
+
+## 2.1 Regression toward the mean (RTM)
+
+```{r}
+#
+
+x<- rnorm(1000,2,2)
+w1<- x + rnorm(1000,0,1)
+w2<- x + rnorm(1000,0,1)
+#
+d<-data.frame(x,w1,w2)
+# selection
+ds<-d%>%filter(w1<2)
+
+summary(ds$w1)
+summary(ds$w2)
+
+t.test(ds$w1,ds$w2)
+
+wilcox.test(ds$w1,ds$w2)
+```
+
+## 2.2 Classical measurment error in regression model
+
+In classical measurement error framework, we assume X is the true value, U is the random error centered at 0, and W is observed measurement. 
+
+$$W = X + U, U \sim Normal(0, \sigma_u)$$
+In this scenario, the objective 
+$$$$
+
+```
+
+## 2.3 Classical measurment error in survival analysis
