@@ -23,10 +23,14 @@ theta4<<--0.02 # cov
 cutoff<-c(90,110,130,150,1000)
 
 #
-data<-simulation.function.v4(20000,cutoff = cutoff[3])
+data<-simulation.function.v4(20000,cutoff = cutoff[5])
 data$ldlc_change<-data$ldlc12 - data$ldlcb
 
 data$ldlc_change_m<-data$ldlc12m - data$ldlcm
+
+lm(data$ldlc_change~data$drug)
+data.sub<-data%>%filter(ldlcb<130)
+lm(data.sub$ldlc_change~data.sub$drug)
 
 #fit<-lm(data,formula = ldlc_change_m~ldlc_change+ldlcb+drug)
 #plot(fit$residuals)

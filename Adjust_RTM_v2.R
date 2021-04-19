@@ -23,10 +23,18 @@ theta4<<--0.02 # cov
 cutoff<-c(90,110,130,150,1000)
 
 #
-data<-simulation.function.v4(20000,cutoff = cutoff[3])
+data<-simulation.function.v4(20000,cutoff = cutoff[1])
 data$ldlc_change<-data$ldlc12 - data$ldlcb
 
 data$ldlc_change_m<-data$ldlc12m - data$ldlcm
+
+data$ldlcb.new = (data$ldlcb -120) *0.62 +120
+data$ldlc_change.new = data$ldlc12m - data$ldlcb.new
+
+data0<-data%>%filter(drug==0)
+
+mean(data0$ldlc_change,na.rm = T)
+mean(data0$ldlc_change.new,na.rm = T)
 
 #fit<-lm(data,formula = ldlc_change_m~ldlc_change+ldlcb+drug)
 #plot(fit$residuals)
@@ -60,14 +68,14 @@ fit1<-regmedint(data = data,
                 ## Variables
                 yvar = "y1",
                 avar = "drug",
-                mvar = "ldlc_change",
+                mvar = "ldlc_change.new",
                 cvar = c("ldlcb"),
                 eventvar = "cen",
                 ## Values at which effects are evaluated
                 a0 = 0,
                 a1 = 1,
-                m_cde = 0,
-                c_cond = 120,
+                m_cde = -50,
+                c_cond = 0,
                 ## Model types
                 mreg = "linear",
                 #yreg = "survCox",
