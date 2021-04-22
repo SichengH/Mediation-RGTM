@@ -18,8 +18,8 @@ ms.intercept<-NULL
 for(i in 1:1000){
   #print(i)
   n<-1000
-  alpha<-1
-  x<- rnorm(n,2,2) + alpha*t#uniform will cause difference
+  #alpha<-1
+  x<- rnorm(n,2,2) #uniform will cause difference
   beta0<-2
   beta1<-4
   y<-beta0+beta1*x+rnorm(n,0,1)
@@ -282,10 +282,10 @@ for(i in 1:10000){
   d.sub$label<-"measured.w/.cutoff"
   
   d<-rbind(d,d.sub)
-  ggplot(data = d)+
-    geom_point(aes(x,y,col = label),alpha = 0.2)+
-    geom_smooth(aes(x,y,col = label),method = "lm",formula = "y~x")+
-    facet_wrap(~t)
+  # ggplot(data = d)+
+  #   geom_point(aes(x,y,col = label),alpha = 0.2)+
+  #   geom_smooth(aes(x,y,col = label),method = "lm",formula = "y~x")+
+  #   facet_wrap(~t)
   
   d0.sub<-d.sub%>%filter(t==0)
 

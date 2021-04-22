@@ -17,7 +17,8 @@ library(tidyr)
 ## Find out where is the bias
 
 ```{r}
-rd.11<-fread("v3-1.csv")
+rd32<-fread("v3-2.csv")
+rd33<-fread("v3-3.csv")
 #rd.10<-fread("rd10.csv")
 #e1 biased
 #e2 gound truth
@@ -36,17 +37,15 @@ rd.11$cutoff.n<-as.numeric(rd.11$cutoff)
 #### Without Treatment Heterogeinity 
 
 ```{r}
-data<-rd.11%>%
-  transmute(cutoff,interaction = e1.beta1,multiple.followup = e2.beta1, adjusted = e3.beta1)%>%
-  gather("method","beta1",-cutoff)
+data<-rd.11
 
 data$cutoff<-as.factor(data$cutoff)
 levels(data$cutoff)[5]<-"No cutoff"
 data$cutoff.n<-as.numeric(data$cutoff)
 
-ggplot(data = data, aes(x = beta1, y = cutoff.n, fill = cutoff)) +
+ggplot(data = data, aes(x = e1.theta2, y = cutoff.n, fill = cutoff)) +
    geom_density_ridges(alpha = 0.5)+
-  facet_wrap(~method)+
+ 
   scale_y_discrete(limit = c(1:10),labels = data$cutoff)+
   coord_flip()+
   theme(legend.position = "bottom",axis.text.x = element_blank(),

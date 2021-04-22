@@ -8,7 +8,7 @@ library(ggplot2)
 
 n<-1000
 x<- rnorm(n,2,2)#uniform will cause more difference
-x<- runif(n,0,4)#uniform will cause more difference
+#x<- runif(n,0,4)#uniform will cause more difference
 beta0<-2
 beta1<-4
 y<-beta0+beta1*x+rnorm(n,0,1)
