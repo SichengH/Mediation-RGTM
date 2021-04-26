@@ -36,7 +36,7 @@ wilcox.test(ds$w1,ds$w2)
 
 ## 2.2 Classical measurment error in regression model
 
-In classical measurement error framework, we assume X is the true value, U is the random error centered at 0, and W is observed measurement. 
+In the classical measurement error framework, we assume X is the actual value, U is the random error centered at 0, and W is the observed measurement. Z is all the other covariates in vector form.
 
 $$W = X + U, U \sim Normal(0, \sigma_u)$$
 In this scenario, the objective of regression can be written as
@@ -47,10 +47,14 @@ Coefficients $\beta_x$ can be estimated using regression function
 
 $$Y = \beta_0^* + \beta_{w}  W + \beta_{z}^tZ + \epsilon$$
 
-
 $$ \lambda = \frac{\sigma_{x|z}^2}{\sigma_{x|z}^2 + \sigma_{u}^2}$$
 
-$$\beta_x = \beta_{w}^ \lambda$$
+$$\beta_x = \beta_{w} \lambda$$
+
+Where $\lambda$ is the variation in W explained by X. Note when X is independent from Z:
+
+$$ \lambda = \frac{\sigma_{x}^2}{\sigma_{x}^2 + \sigma_{u}^2}$$
+
 ```{r}
 
 ## Classical measurement error
@@ -76,33 +80,28 @@ ggplot(data = d)+
 
 
 
-## 2.3 Classical measurment error in survival analysis
+## 2.3 Classical measurement error in survival analysis
 
 This framework can be extend to survival analysis. Recall common survival function:
 
+$$ S(t|\theta) = S_0(\theta t)$$
+With probability density function
 
+$$ f(t|\theta) = \theta f_0(\theta t)$$
 
-$$ S(t) = exp(-\lambda t)$$
+$$log(T) = -log(\theta) + log(\theta T_0)$$
+And
 
-Solving for t gives:
+$$\theta = exp(-\beta^t X)$$
 
-$$ t = -log(S(t)) \frac{1}{\lambda}$$
+Then we can rewrite the model in a general form of AFT model, where x has measurement error
 
-Reparameterizing 
+$$log(T) = \beta_0 + \beta_x  X + \beta_{z}^t Z + \epsilon$$
 
-$$\frac{1}{\lambda} = exp(\beta^t X)$$
-
-In a general form of AFT model, where x the variation has measurement error
-
-$$log(T) = \beta_0 + \beta_x * X + \beta_{z}^t*Z + \epsilon$$
-
-
-
+With 
 
 $$W = X + U, U \sim Normal(0, \sigma_u)$$
-
-$$$$
-
+Parameter can be estimated in the same procedure as in section 2.3.
 
 
 ## 2.4 Measurement error with truncation

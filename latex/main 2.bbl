@@ -1,0 +1,58 @@
+\begin{thebibliography}{1}
+
+\bibitem{barnett2005regression}
+Adrian~G Barnett, Jolieke~C Van Der~Pols, and Annette~J Dobson.
+\newblock Regression to the mean: what it is and how to deal with it.
+\newblock {\em International journal of epidemiology}, 34(1):215--220, 2005.
+
+\bibitem{carroll2006measurement}
+Raymond~J Carroll, David Ruppert, Leonard~A Stefanski, and Ciprian~M
+  Crainiceanu.
+\newblock {\em Measurement error in nonlinear models: a modern perspective}.
+\newblock CRC press, 2006.
+
+\bibitem{chen2000direct}
+Hong Chen, Uichi Ikeda, Masahisa Shimpo, and Kazuyuki Shimada.
+\newblock Direct effects of statins on cells primarily involved in
+  atherosclerosis.
+\newblock {\em Hypertension Research}, 23(2):187--192, 2000.
+
+\bibitem{le2012quantification}
+Saskia le~Cessie, Jan Debeij, Frits~R Rosendaal, Suzanne~C Cannegieter, and
+  Jan~P Vandenbrouckea.
+\newblock Quantification of bias in direct effects estimates due to different
+  types of measurement error in the mediator.
+\newblock {\em Epidemiology}, pages 551--560, 2012.
+
+\bibitem{ridker2008rosuvastatin}
+Paul~M Ridker, Eleanor Danielson, Francisco~AH Fonseca, Jacques Genest,
+  Antonio~M Gotto~Jr, John~JP Kastelein, Wolfgang Koenig, Peter Libby,
+  Alberto~J Lorenzatti, Jean~G MacFadyen, et~al.
+\newblock Rosuvastatin to prevent vascular events in men and women with
+  elevated c-reactive protein.
+\newblock {\em New England journal of medicine}, 359(21):2195--2207, 2008.
+
+\bibitem{stancu2001statins}
+Camelia Stancu and Anca Sima.
+\newblock Statins: mechanism of action and effects.
+\newblock {\em Journal of cellular and molecular medicine}, 5(4):378--387,
+  2001.
+
+\bibitem{takahashi2010lipid}
+Osamu Takahashi, Paul~P Glasziou, Rafael Perera, Takuro Shimbo, Jiro Suwa,
+  Sonoe Hiramatsu, and Tsuguya Fukui.
+\newblock Lipid re-screening: what is the best measure and interval?
+\newblock {\em Heart}, 96(6):448--452, 2010.
+
+\bibitem{vanderweele2015explanation}
+Tyler VanderWeele.
+\newblock {\em Explanation in causal inference: methods for mediation and
+  interaction}.
+\newblock Oxford University Press, 2015.
+
+\bibitem{vanderweele2011causal}
+Tyler~J VanderWeele.
+\newblock Causal mediation analysis with survival data.
+\newblock {\em Epidemiology (Cambridge, Mass.)}, 22(4):582, 2011.
+
+\end{thebibliography}

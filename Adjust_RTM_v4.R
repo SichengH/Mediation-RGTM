@@ -60,9 +60,9 @@ simulation.function.v6<-function(sample.size = 20000,cutoff = 1000){
 p<<-1.4
 #outcome regression AFT
 t.theta0<<-7.5
-t.theta1<<-0.0 #direct effect, positive is protective
-t.theta2<<--0.015  #effect * ldlc_change; negative is protective
-t.theta3<<-0.0 # ldlc_change * drug assume no effect (0 or 0.02)
+t.theta1<<-1.8 #direct effect, positive is protective
+t.theta2<<-0.01  #effect * ldlc_change; negative is protective
+t.theta3<<--0.15 # ldlc_change * drug assume no effect (0 or 0.02)
 t.theta4<<- 0# cov
 
 # theta0_ni<<-7.7
@@ -73,7 +73,7 @@ cutoff<-c(90,110,130,150,1000)
 #where naturally drop exist
 
 
-data<-simulation.function.v6(20000,cutoff = cutoff[5])# 3 variance, population, mean change, Um 
+data<-simulation.function.v6(20000,cutoff = cutoff[3])# 3 variance, population, mean change, Um 
 
 
 #fit<-lm(data,formula = ldlc_change_m~ldlc_change+ldlcb+drug)
@@ -125,8 +125,8 @@ sd(data$ldlc12m)
 sd(data$ldlcm)
 data.sub<-data%>%filter(drug==0)
 sd(data.sub$ldlc12m)
-sigma.l<-14.2
-#sigma.l<-sd(data.sub$ldlc12m)
+#sigma.l<-14.2
+sigma.l<-sd(data.sub$ldlc12m)
 
 sigma.u<-16
 
@@ -143,11 +143,13 @@ theta2_adj<- theta2 / lambda
 
 
 
-n<-1000
+n<-100
 # Simulation:
 
 # Method: 
 
+
+sigma.l<-NULL
 rd11<-NULL
 set.seed(1)
 for(j in 1:n){
@@ -176,6 +178,11 @@ for(j in 1:n){
     cutoff<-c(90,110,130,150,1000)
     for(i in 1:5){
       data<-simulation.function.v6(20000,cutoff = cutoff[i])
+      
+      
+      data.sub<-data%>%filter(drug==0)
+      sigma.l[i]<-sd(data.sub$ldlc12m)
+      
       data$cen<-rep(1,20000)
       
       data$y1<-rweibull(20000,shape = 1/p,scale = exp(t.theta0+t.theta1*data$drug+
@@ -257,7 +264,7 @@ for(j in 1:n){
 
 setwd("/Users/sh/Documents/GitHub/Mediation-RGTM/")
 
-fwrite(rd11,file = "v3-1.csv")
+fwrite(rd11,file = "v3-0.csv")
 
 #v2-0: messed up adj
 #v2-1: updated adj, correctly, positive theta2(harmful)
@@ -265,7 +272,9 @@ fwrite(rd11,file = "v3-1.csv")
 #v2-3: f4, 
 #v2-4: f42, CATE beta1
 
-#v3-1: normal x, no direct effect, no interaction in model,need to re run
+
+#v3-0: normal x, no direct effect, with interaction in model,no interaction in the model,check
+#v3-1: normal x, no direct effect, no interaction in model,,check
 #v3-2: normal x, no direct effect, no interaction, but model has interaction
 #v3-3: normal x, no direct effect, with interaction,  model has interaction,check
 
